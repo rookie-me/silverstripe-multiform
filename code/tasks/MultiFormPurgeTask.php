@@ -32,9 +32,12 @@ class MultiFormPurgeTask extends BuildTask {
 	public function run($request) {
 		$sessions = $this->getExpiredSessions();
 		$delCount = 0;
+		$limit = $request->getVar('limit');
+
 		if($sessions) foreach($sessions as $session) {
 			$session->delete();
 			$delCount++;
+			if($delCount == $limit) break;
 		}
 		echo $delCount . ' session records deleted that were older than ' . self::$session_expiry_days . ' days.';
 	}
